@@ -4,6 +4,7 @@ https://portswigger.net/web-security/sql-injection/blind/lab-conditional-errors
 
 it uses binary search to find the password much faster
 """
+from time import sleep
 import requests
 from pprint import pprint 
 import string
@@ -60,6 +61,8 @@ def BinarySearchPassword(start, end, index, CheckPass, debug):
 	"""
 	if debug:
 		print(f'index: {index}, end: {end}, start: {start}')
+	else:
+		print(LooksCool(start,end))
 
 	middle = GetMiddle(start, end)
 
@@ -125,6 +128,7 @@ def Test():
 	solved_password = ''
 
 	def TestCheckPass(pass_index, search_index, debug):
+		sleep(1)
 		print(f"..CheckPass: {test_password[pass_index]} > {alpha_num[search_index]}..")
 		if test_password[pass_index] > alpha_num[search_index]:
 			print('true')
@@ -146,6 +150,31 @@ def TestConnection():
 
 	return status_code == 200
 
+def LooksCool(start, end):
+	def val(start, end, item, arr):
+		index = arr.index(item)
+
+		if start <= index and end >= index:
+			return item
+		else :
+			return '-'
+	
+	def middstr():
+		return ''.join(map(lambda x: '|' + val(start, end, x, alpha_num), alpha_num))
+	
+	def borderstr():
+		midd = GetMiddle(start, end)
+		return ''.join(map(lambda x:'=|'if  alpha_num.index(x) == midd else '==', alpha_num))
+
+	string = f"""
+	{borderstr()}
+	{middstr()}
+	{borderstr()}
+	"""
+	# return middstr()
+	# return borderstr()
+	return string
+	
 
 def Solve(password_arr, solved_password, CheckPass, test_password='', debug=False):
 	ll = len(password_arr)
@@ -175,7 +204,7 @@ def Main():
 
 	print('Starting...')
 	print('Testing connection..')
-	ans = 'ok' if TestConnection else 'bad' 
+	ans = 'ok' if TestConnection() else 'bad' 
 	print(f'Connection {ans}' )
 	print(f'alphanumeric set: {alpha_num}\nNo. of possible chars: {len_alpha_num}\nPassword length: {len_pass}\n')
 
@@ -183,5 +212,5 @@ def Main():
 
 
 if __name__ == "__main__":
-	Main()
-	# Test()
+	# Main()
+	Test()
